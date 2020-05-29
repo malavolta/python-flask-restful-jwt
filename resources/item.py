@@ -1,3 +1,4 @@
+from flask_jwt_extended import fresh_jwt_required
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 from models.item import ItemModel
@@ -14,8 +15,8 @@ class Item(Resource):
                         required=True,
                         help="Every item needs a store id.")
 
-    @jwt_required
-    def get(self, name):
+    @fresh_jwt_required
+    def get(self, name: str):
         item = ItemModel.find_by_name(name)
         if item:
             return item.json()
@@ -59,5 +60,6 @@ class Item(Resource):
 
 
 class ItemList(Resource):
+    @fresh_jwt_required
     def get(self):
         return {'items': [x.json() for x in ItemModel.query.all()]}

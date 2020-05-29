@@ -1,4 +1,3 @@
-
 from models.user import UserModel
 from models.item import ItemModel
 from models.store import StoreModel
@@ -12,15 +11,15 @@ class ItemTest(BaseTest):
         with self.app as c:
             with self.app_context():
                 UserModel('test', '1234').save_to_db()
-                auth_request = c.post('/auth', data=json.dumps({
+                auth_request = c.post('/login', data=json.dumps({
                     'username': 'test',
                     'password': '1234'
                 }), headers={'Content-Type': 'application/json'})
-                self.auth_header = "JWT {}".format(json.loads(auth_request.data)['access_token'])
+                self.auth_header = "Bearer {}".format(json.loads(auth_request.data)['access_token'])
 
     def test_item_no_auth(self):
         with self.app as c:
-            r = c.get('/item/test',  headers={'Authorization': self.auth_header})
+            r = c.get('/item/test')
             self.assertEqual(r.status_code, 401)
 
     def test_item_not_found(self):
@@ -96,7 +95,7 @@ class ItemTest(BaseTest):
             with self.app_context():
                 StoreModel('test').save_to_db()
                 ItemModel('test', 17.99, 1).save_to_db()
-                r = c.get('/items')
+                r = c.get('/items', headers={'Authorization': self.auth_header})
 
                 self.assertDictEqual(d1={'items': [{'name': 'test', 'price': 17.99}]},
                                      d2=json.loads(r.data))

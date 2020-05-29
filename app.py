@@ -1,13 +1,13 @@
 import os
 
 from flask import Flask, jsonify
+from flask_jwt_extended import JWTManager
 from flask_restful import Api
-from flask_jwt import JWT, JWTError
+from flask_jwt import JWTError
 
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
-from resources.user import UserRegister
-from security import authenticate, identity
+from resources.user import UserRegister, User, UserLogin, UserLogout, TokenRefresh
 
 app = Flask(__name__)
 
@@ -17,12 +17,17 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',
                                                        'postgres://afczbzvi:h5TlgTZobP_QaaEBmyVjadPiUTlt08SB@motty.db.elephantsql.com:5432/afczbzvi')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'Malavolta'
+app.config['JWT_DEFAULT_REALM'] = "ftp-sender"
 
 api = Api(app)
 
-jwt = JWT(app, authenticate, identity)  # /auth
+jwt = JWTManager(app)  # /auth
 
 api.add_resource(UserRegister, '/register')
+api.add_resource(User, "/user/<int:user_id>")
+api.add_resource(UserLogin, "/login")
+api.add_resource(TokenRefresh, "/refresh")
+api.add_resource(UserLogout, "/logout")
 api.add_resource(Store, '/store/<string:name>')
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(ItemList, '/items')
