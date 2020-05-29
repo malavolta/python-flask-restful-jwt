@@ -1,7 +1,9 @@
 import os
 
+import flask_jwt_extended
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
+from flask_jwt_extended.exceptions import NoAuthorizationError
 from flask_restful import Api
 from flask_jwt import JWTError
 
@@ -22,6 +24,7 @@ app.config['JWT_DEFAULT_REALM'] = "ftp-sender"
 api = Api(app)
 
 jwt = JWTManager(app)  # /auth
+app.config['PROPAGATE_EXCEPTIONS'] = True
 
 api.add_resource(UserRegister, '/register')
 api.add_resource(User, "/user/<int:user_id>")
@@ -34,8 +37,9 @@ api.add_resource(ItemList, '/items')
 api.add_resource(StoreList, '/stores')
 
 
-@app.errorhandler(JWTError)
-def auth_error_handler(err):
+
+@app.errorhandler(NoAuthorizationError)
+def handle_auth_error(e):
     return jsonify({'menssage': 'Could no authorize. Did you include a valid Authorization in header'}), 401
 
 

@@ -32,7 +32,7 @@ class StoredTest(BaseTest):
             item.save_to_db()
 
             self.assertIsNotNone(store.items.count(), 1)
-            self.assertEquals(store.items.first().name, 'test_item')
+            self.assertEqual(store.items.first().name, 'test_item')
 
     def test_store_json(self):
         store = StoreModel('test')

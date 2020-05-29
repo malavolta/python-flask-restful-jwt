@@ -19,7 +19,7 @@ class UserTest(BaseTest):
         with self.app as c:
             with self.app_context():
                 c.post('/register', data={'username': 'malavolta', 'password': '234'})
-                auth_request = c.post('/auth',
+                auth_request = c.post('/login',
                                       data=json.dumps({'username': 'malavolta', 'password': '234'}),
                                       headers={'Content-Type': 'application/json'}
                                       )
@@ -32,5 +32,5 @@ class UserTest(BaseTest):
                 c.post('/register', data={'username': 'malavolta', 'password': '234'})
                 response = c.post('/register', data={'username': 'malavolta', 'password': '234'})
 
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(json.loads(response.data), {'message': 'username is already exist'})

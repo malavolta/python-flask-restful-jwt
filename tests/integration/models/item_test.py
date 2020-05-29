@@ -27,4 +27,4 @@ class ItemTest(BaseTest):
             item = ItemModel('Mouse', 20.99, store.id)
             item.save_to_db()
 
-            self.assertEquals(item.store.name, 'test_store')
+            self.assertEqual(item.store.name, 'test_store')
