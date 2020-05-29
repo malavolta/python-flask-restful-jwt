@@ -1,11 +1,9 @@
 import os
 
-import flask_jwt_extended
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended.exceptions import NoAuthorizationError
 from flask_restful import Api
-from flask_jwt import JWTError
 
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
